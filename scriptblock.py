@@ -8,6 +8,7 @@ class ScriptBlock(object):
     _warning = False
     _wrapper = None
     _textformatter = None
+    _textonly      = False
     _baselno = 0
     _lno     = 0
     _comment = [] # Commentary line indices
@@ -29,6 +30,8 @@ class ScriptBlock(object):
             self._wrapper = wrapper.Wrapper()
         if (parser.istextformat()):
             self._textformatter = textformatter.TextFormatter()
+        if (parser.istextonly()):
+            self._textonly = True
     
     def clear(self):
         self._baselno = 0
@@ -99,16 +102,21 @@ class ScriptBlock(object):
             newtext = map(self._textformatter.formatline, self._block[-len(self._text):])
             self._textformatter.clear()
             self._block = self._block[:-len(self._text)] + newtext
-            #print newtext
+            #print "Newtext",newtext
         
         f = open("out.txt", 'a')
         
-        #print self._block
-        #for line in self._block[-len(self._text):]:
-        for line in self._block:
-            str_ = u''
-            for word in line:
-                str_ += word
-            #print str_
-            f.write(str_.encode(encoding))
+        lines = []
+        if(self._textonly and len(self._text) != 0):
+            lines = map(self.__writeline__, self._block[-len(self._text):])
+        elif(not self._textonly):
+            lines = map(self.__writeline__, self._block)
+        
+        for line in lines: f.write(line.encode(encoding))
         f.close()
+    
+    def __writeline__(self, line):
+        str_ = u''
+        for word in line:
+            str_ += word
+        return str_
