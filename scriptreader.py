@@ -35,10 +35,11 @@ class ScriptReader(object):
                 
                 if (line[0] == ';'):
                     self._block.addcommentline(line)
-                elif (line[0] == '['):
+                elif (line[0] == '[' or line[0] == '@'):
                     self._block.addtagline(line)
                 elif (line[0] == '*'):
                     # TODO Process old block before clearing it
+                    self._block.write(self._encoding)
                     self._block.clear().setbaselinenumber(self._lno)
                     self._block.addpointerline(line)
                 else:
