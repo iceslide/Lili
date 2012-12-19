@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import fileinput
+#import fileinput
 import scriptblock
 
 class ScriptReader(object):
@@ -38,12 +38,14 @@ class ScriptReader(object):
                 elif (line[0] == '[' or line[0] == '@'):
                     self._block.addtagline(line)
                 elif (line[0] == '*'):
-                    # TODO Process old block before clearing it
+                    # Process old block before clearing it
                     self._block.write(self._encoding)
                     self._block.clear().setbaselinenumber(self._lno)
+                    # New block
                     self._block.addpointerline(line)
                 else:
                     # Game text
                     self._block.addtextline(line)
         
+        self._block.write(self._encoding)
         print self._lno, "lines processed"
