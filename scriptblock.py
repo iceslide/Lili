@@ -82,6 +82,7 @@ class ScriptBlock(object):
         # Wrap text if word wrapping is enabled
         if (self._wrapper != None):
             newtext = self._wrapper.wrap(self._block[-len(self._text):])
+            self._wrapper.clear()
             #print "newtext:", newtext
             #print "block:", self._block
             #print self._block[:-len(self._text)] + newtext
@@ -92,12 +93,14 @@ class ScriptBlock(object):
         
         if(self._textformatter != None and len(self._text) != 0):
             newtext = map(self._textformatter.formatline, self._block[-len(self._text):])
+            self._textformatter.clear()
             self._block = self._block[:-len(self._text)] + newtext
             #print newtext
         
         f = open("out.txt", 'w')
         
         #print self._block
+        #for line in self._block[-len(self._text):]:
         for line in self._block:
             str_ = u''
             for word in line:
