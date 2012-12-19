@@ -18,6 +18,10 @@ class ScriptBlock(object):
     _block   = []
     
     def __init__(self):
+        # Empty output file
+        f = open("out.txt", 'w')
+        f.close()
+        
         parser = liliargparser.LiliArgParser().parse()
         if (parser.iswarning()):
             self._warning = True
@@ -97,7 +101,7 @@ class ScriptBlock(object):
             self._block = self._block[:-len(self._text)] + newtext
             #print newtext
         
-        f = open("out.txt", 'w')
+        f = open("out.txt", 'a')
         
         #print self._block
         #for line in self._block[-len(self._text):]:
@@ -106,5 +110,5 @@ class ScriptBlock(object):
             for word in line:
                 str_ += word
             #print str_
-            #f.write(str_.encode(encoding))
+            f.write(str_.encode(encoding))
         f.close()
