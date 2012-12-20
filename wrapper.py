@@ -29,7 +29,7 @@ class Wrapper(object):
                 break
         
         if (not dowrap):
-            return sel
+            return self._textlines
             #print "map", map(self.tokenize, self._textlines)f._textlines
         
         # Wrap segment
