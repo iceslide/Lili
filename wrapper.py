@@ -56,6 +56,8 @@ class Wrapper(object):
                 if (t != u' '):
                     tmp = [t]
                     n += self.lenignoretag(t)
+                else:
+                    tmp = []
                 
         newtokens.append(tmp)
         
