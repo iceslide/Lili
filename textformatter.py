@@ -24,10 +24,22 @@ class TextFormatter(object):
         if (self._lineno == 1 and line[0] == self._openquote):
             self._isquote = True
         
+        #string.find: -1 to look from end to start. returns -1 when substring not found
+        if (self._isquote):
+            i = line.find(self._closequote)
+            while(i != -1):
+                if(line[i - 1] == '.'):
+                    line = line[:i - 1] + line[i:]
+                
+                i = line.find(self._closequote, i+1)
+                
+        
         # Insert double space to align lines/paragraph
         if (self._lineno > 1 and self._isquote):
-            if (line[0] == u' '): line[0] = self._doublewidthspace
-            elif (line[0] != self._doublewidthspace): line = self._doublewidthspace + line
+            if (line[0] == u' '):
+                line = self._doublewidthspace + line[1:]
+            elif (line[0] != self._doublewidthspace):
+                line = self._doublewidthspace + line
         
         # If no quotation, the lines/paragraph is not aligned
         if (self._lineno > 1 and not self._isquote):
