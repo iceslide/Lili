@@ -87,7 +87,7 @@ class ScriptBlock(object):
     
     def write(self, encoding):
         # Wrap text if word wrapping is enabled
-        if (self._wrapper != None):
+        if (self._wrapper != None and len(self._text) != 0):
             newtext = self._wrapper.wrap(self._block[-len(self._text):])
             self._wrapper.clear()
             #print "newtext:", newtext
