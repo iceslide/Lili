@@ -16,6 +16,7 @@ class ScriptBlock(object):
     _pointer = None
     _text    = []
     _maxlinelen = 68
+    _maxlines   = 3 # max lines in a text block
     _block   = []
     
     def __init__(self):
@@ -67,16 +68,19 @@ class ScriptBlock(object):
         self._lno += 1
         
         if (self._warning):
-            if (self.lenignoretag(line) > self._maxlinelen):
-                print "Warning: line", self._lno + self._baselno, "is too long"
+            if (self.lenignoretag(line) > self._maxlinelen + 1):
+                print "Warning: line", self._lno + self._baselno - 1, "is too long,", self.lenignoretag(line), "characters"
                 print self._block[-1]
+            
+            if (len(self._text) > self._maxlines):
+                print "Warning: line", self._lno + self._baselno - 1, "Too many lines in the message box"
     
     # ============================================================================
     
     def lenignoretag(self, line):
         n = 0
         level = 0
-        for c in line:
+        for c in line.rstrip():
             if (c == u'['): level += 1
             elif (c == u']'): level -= 1
             
@@ -98,8 +102,11 @@ class ScriptBlock(object):
                 self._text = range(self._text[0], self._text[0]+len(newtext))
             #print "1", self._block
         
+        # Format text if text formatting is enabled
         if(self._textformatter != None and len(self._text) != 0):
             newtext = map(self._textformatter.formatline, self._block[-len(self._text):])
+            #if (newtext != self._block[-len(self._text):]):
+            #    print self._baselno + self._lno - 1
             self._textformatter.clear()
             self._block = self._block[:-len(self._text)] + newtext
             #print "Newtext",newtext
