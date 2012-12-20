@@ -33,7 +33,7 @@ class Wrapper(object):
             #print "map", map(self.tokenize, self._textlines)f._textlines
         
         # Wrap segment
-        self._tokens = map(self.tokenize, self._textlines)n
+        self._tokens = map(self.tokenize, self._textlines)
         
         # Flatten tokens list
         flattokens = []
