@@ -27,7 +27,7 @@ class TextFormatter(object):
         if (self._isquote):
             i = line.find(self._closequote)
             while(i != -1):
-                if(line[i - 1] == '.'):
+                if(line[i - 1] == '.' and line[i - 2] != '.'):
                     line = line[:i - 1] + line[i:]
                     
                 i = line.find(self._closequote, i+1)
