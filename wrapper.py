@@ -29,17 +29,17 @@ class Wrapper(object):
                 break
         
         if (not dowrap):
-            return self._textlines
+            return sel
+            #print "map", map(self.tokenize, self._textlines)f._textlines
         
         # Wrap segment
-        self._tokens = map(self.tokenize, self._textlines)[0] # tokenize returns a list, with map we get [[]]
+        self._tokens = map(self.tokenize, self._textlines)n
         
         # Flatten tokens list
-        flattokens = self._tokens
-        #flattokens = []
-        #for i in range(len(self._tokens)):
-        #    for j in range(len(self._tokens[i])):
-        #        flattokens += self._tokens[i][j]
+        flattokens = []
+        for i in range(len(self._tokens)):
+            flattokens += self._tokens[i]
+        #print "Flattokens", flattokens
         
         # Wrap loop
         tmp = []
@@ -52,14 +52,15 @@ class Wrapper(object):
             else:
                 # Line is full
                 newtokens.append(tmp)
-                if (t == u' '): tmp = []
-                else: tmp = [t]
-                    
                 n = 0
+                if (t != u' '):
+                    tmp = [t]
+                    n += self.lenignoretag(t)
+                
         newtokens.append(tmp)
         
         #print "N:", len(newtokens)
-        #print newtokens
+        #print "Newtokens:", newtokens
         return self.tokenstotext(newtokens)
     
     # ============================================================================
