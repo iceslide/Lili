@@ -21,8 +21,8 @@ class ScriptBlock(object):
     
     def __init__(self):
         # Empty output file
-        f = open("out.txt", 'w')
-        f.close()
+        #f = open("out.txt", 'w')
+        #f.close()
         
         parser = liliargparser.LiliArgParser().parse()
         if (parser.iswarning()):
@@ -89,7 +89,7 @@ class ScriptBlock(object):
     
     # ============================================================================
     
-    def write(self, encoding):
+    def write(self, file_, encoding):
         # Wrap text if word wrapping is enabled
         if (self._wrapper != None and len(self._text) != 0):
             newtext = self._wrapper.wrap(self._block[-len(self._text):])
@@ -111,7 +111,7 @@ class ScriptBlock(object):
             self._block = self._block[:-len(self._text)] + newtext
             #print "Newtext",newtext
         
-        f = open("out.txt", 'a')
+        f = open(file_, 'a')
         
         lines = []
         if(self._textonly and len(self._text) != 0):
@@ -119,7 +119,9 @@ class ScriptBlock(object):
         elif(not self._textonly):
             lines = map(self.__writeline__, self._block)
         
-        for line in lines: f.write(line.encode(encoding))
+        for line in lines:
+            f.write(line.encode(encoding))
+        
         f.close()
     
     def __writeline__(self, line):

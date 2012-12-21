@@ -2,36 +2,47 @@
 # -*- coding: utf-8 -*-
 #import fileinput
 import scriptblock
+import liliargparser
 
 class ScriptReader(object):
     """
     """
-    _filename  = u''
-    _encoding  = None
-    _lno       = 0      # Line number
-    _block     = None   # ScriptBlock
+    _inputfile      = u''
+    _outputfile     = u"out.txt"
+    _encoding       = u"sjis"
+    _lineno         = 0      # Line number
+    _block          = None   # ScriptBlock
   
-    def __init__(self, filename, encoding="sjis"):
+    def __init__(self, filename):
         """ Constructor """
-        self._filename = filename
-        self._encoding = encoding
-        self._lno = 0
+        self._inputfile = filename
+        self._lineno    = 0
+        
+        parser = liliargparser.LiliArgParser().parse()
+        if (parser.getencoding()):
+            self._encoding = parser.getencoding()
+        if (parser.getoutputfile()):
+            self._outputfile = parser.getoutputfile()
+                
         return None
   
     def process(self):
         self._block = scriptblock.ScriptBlock()
-        self._block.setbaselinenumber(self._lno)
+        self._block.setbaselinenumber(self._lineno)
+        
+        fout = open(self._outputfile, 'w')
+        
         # Check if scriptreader-fileinput works correctly in py3
-        with open(self._filename, 'r') as f:
+        with open(self._inputfile, 'r') as f:
             for line in f:
                 line = line.decode(self._encoding)
-                self._lno += 1
+                self._lineno += 1
                 
-                #if (self._lno < 300):
+                #if (self._lineno < 300):
                 #    continue
-                #elif (self._lno > 310):
+                #elif (self._lineno > 310):
                 #    return
-                #print self._lno, line
+                #print self._lineno, line
                 
                 if (line[0] == ';'):
                     self._block.addcommentline(line)
@@ -39,13 +50,15 @@ class ScriptReader(object):
                     self._block.addtagline(line)
                 elif (line[0] == '*'):
                     # Process old block before clearing it
-                    self._block.write(self._encoding)
-                    self._block.clear().setbaselinenumber(self._lno)
+                    self._block.write(self._outputfile, self._encoding)
+                    self._block.clear().setbaselinenumber(self._lineno)
                     # New block
                     self._block.addpointerline(line)
                 else:
                     # Game text
                     self._block.addtextline(line)
         
-        self._block.write(self._encoding)
-        print self._lno, "lines processed"
+        self._block.write(self._outputfile, self._encoding)
+        fout.close()
+        
+        print self._lineno, "lines processed"

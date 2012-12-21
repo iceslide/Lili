@@ -14,9 +14,10 @@ class LiliArgParser(object):
     def parse(self):
         """ Parse the input arguments """
         parser = argparse.ArgumentParser(prog=constants.__programname__)
-        parser.add_argument('-e', nargs='1', help='specify the input file encoding. Default: Shift-jis')
-        parser.add_argument('-i', nargs='1', help='input file')
+        parser.add_argument('-e', nargs='+', help='specify the input file encoding. Default: Shift-jis')
+        parser.add_argument('-i', nargs='+', type=str, help='input file')
         parser.add_argument('-f', action='store_true', help='enforces the original text formatting style')
+        parser.add_argument('-o', nargs='+', help='output file')
         parser.add_argument('-t', action='store_true', help='output only the game text')
         parser.add_argument('-w', action='store_true', help='prints a warning when a text line is too long')
         parser.add_argument('-W', action='store_true', help='(EXPERIMENTAL) Attempts at word wrapping text lines')
@@ -34,6 +35,9 @@ class LiliArgParser(object):
     def istextformat(self):
         """ Returns True if -f was passed, None otherwise """
         return self._argsdict['f']
+    
+    def getoutputfile(self):
+        return self._argsdict['o']
     
     def istextonly(self):
         return self._argsdict['t']
