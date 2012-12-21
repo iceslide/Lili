@@ -14,7 +14,8 @@ class LiliArgParser(object):
     def parse(self):
         """ Parse the input arguments """
         parser = argparse.ArgumentParser(prog=constants.__programname__)
-        parser.add_argument('-i', nargs='+', help='list of input files')
+        parser.add_argument('-e', nargs='1', help='specify the input file encoding. Default: Shift-jis')
+        parser.add_argument('-i', nargs='1', help='input file')
         parser.add_argument('-f', action='store_true', help='enforces the original text formatting style')
         parser.add_argument('-t', action='store_true', help='output only the game text')
         parser.add_argument('-w', action='store_true', help='prints a warning when a text line is too long')
@@ -23,6 +24,9 @@ class LiliArgParser(object):
         args = parser.parse_args(args=sys.argv[1:])
         self._argsdict = vars(args)
         return self
+    
+    def getencoding(self):
+        return self._argsdict['e']
     
     def getinputfiles(self):
         return self._argsdict['i']
