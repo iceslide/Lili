@@ -4,7 +4,7 @@ class Wrapper(object):
     """"""
     _textlines  = []
     _tokens     = [] # Line Tokens
-    _maxlinelen = 68
+    _maxlinelen = 58 # Value for Taimanin Asagi 2 Premium Box. Change accordingly for your game
     _maxlines   = 3 # max lines in a text block
     _newline    = u'\r\n'
     _doublewidthchars = [u'「', u'」', u'『', u'』', u'\u3000']

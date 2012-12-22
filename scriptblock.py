@@ -15,7 +15,7 @@ class ScriptBlock(object):
     _tag           = [] # Tag line indices
     _pointer       = None
     _text          = []
-    _maxlinelen    = 68
+    _maxlinelen    = 58 # Value for Taimanin 2 Asagi Premium Box. Change accordingly for your game
     _maxlines      = 3 # max lines in a text block
     _block         = []
     
