@@ -42,46 +42,42 @@ class ScriptBlock(object):
         
     # ============================================================================
     
-    def setbaselinenumber(self, baselno):
-        self._baselineno = baselno
+    def setbaselinenumber(self, baselineno):
+        self._baselineno = baselineno - 1# Substract 1 so that baselineno + lineno points to the right line
     
     def addcommentline(self, line):
+        self._lineno += 1
         self._comment.append(self._lineno)
         self._block.append(line)
-        # A comment block begins with a comment. Typically first block in file
-        if (self._baselineno == None): self._baselineno = 0
-        else:                          self._lineno    += 1
     
     def addtagline(self, line):
+        self._lineno += 1
         self._tag.append(self._lineno)
         self._block.append(line)
-        self._lineno += 1
     
     def addpointerline(self, line):
+        self._lineno += 1
         self._pointer = self._lineno
         self._block.append(line)
-        # A block begins with a pointer
-        if (self._baselineno == None): self._baselineno = 0
-        else:                          self._lineno    += 1
     
     def addtextline(self, line):
+        self._lineno += 1
         
         if (line[:4] == u"===="):
             self._block.append(line)
-            self._lineno += 1
             return                  # Don't process line as text
         
         self._text.append(self._lineno)
         self._block.append(line)
-        self._lineno += 1
         
         if (self._warning):
             if (self.lenignoretag(line) > self._maxlinelen):
-                print "[Warning][line", self._lineno + self._baselineno, "] Line is too long,", self.lenignoretag(line), "characters: ",
+                print self._baselineno
+                print "[Warning][line", self._baselineno + self._lineno, "] Line is too long,", self.lenignoretag(line), "characters: ",
                 print self._block[-1][:50], "..."
             
             if (len(self._text) > self._maxlines):
-                print "Warning: line", self._lineno + self._baselineno, "Too many lines in the message box"
+                print "Warning: line", self._baselineno + self._lineno, "Too many lines in the message box"
     
     # ============================================================================
     
