@@ -5,25 +5,21 @@ import textformatter
 
 class ScriptBlock(object):
     """"""
-    _warning = False
-    _wrapper = None
+    _warning       = False
+    _wrapper       = None
     _textformatter = None
     _textonly      = False
-    _baselno = 0
-    _lno     = 0
-    _comment = [] # Commentary line indices
-    _tag     = [] # Tag line indices
-    _pointer = None
-    _text    = []
-    _maxlinelen = 68
-    _maxlines   = 3 # max lines in a text block
-    _block   = []
+    _baselineno    = None
+    _lineno        = 0
+    _comment       = [] # Commentary line indices
+    _tag           = [] # Tag line indices
+    _pointer       = None
+    _text          = []
+    _maxlinelen    = 68
+    _maxlines      = 3 # max lines in a text block
+    _block         = []
     
-    def __init__(self):
-        # Empty output file
-        #f = open("out.txt", 'w')
-        #f.close()
-        
+    def __init__(self):        
         parser = liliargparser.LiliArgParser().parse()
         if (parser.iswarning()):
             self._warning = True
@@ -35,45 +31,51 @@ class ScriptBlock(object):
             self._textonly = True
     
     def clear(self):
-        self._baselno = 0
-        self._lno     = 0
-        self._comment = []
-        self._tag     = []
-        self._pointer = None
-        self._text    = []
-        self._block   = []
+        self._baselineno = None
+        self._lineno     = 0
+        self._comment    = []
+        self._tag        = []
+        self._pointer    = None
+        self._text       = []
+        self._block      = []
         return self
+        
+    # ============================================================================
     
     def setbaselinenumber(self, baselno):
-        self._baselno = baselno
+        self._baselineno = baselno
     
     def addcommentline(self, line):
-        self._comment.append(self._lno)
+        self._comment.append(self._lineno)
         self._block.append(line)
-        self._lno += 1
+        if (self._baselineno == None): self._baselineno = 0
+        else:                          self._lineno    += 1
     
     def addtagline(self, line):
-        self._tag.append(self._lno)
+        self._tag.append(self._lineno)
         self._block.append(line)
-        self._lno += 1
+        if (self._baselineno == None): self._baselineno = 0
+        else:                          self._lineno    += 1
     
     def addpointerline(self, line):
-        self._pointer = self._lno
+        self._pointer = self._lineno
         self._block.append(line)
-        self._lno += 1
+        if (self._baselineno == None): self._baselineno = 0
+        else:                          self._lineno    += 1
     
     def addtextline(self, line):
-        self._text.append(self._lno)
+        self._text.append(self._lineno)
         self._block.append(line)
-        self._lno += 1
+        if (self._baselineno == None): self._baselineno = 0
+        else:                          self._lineno    += 1
         
         if (self._warning):
             if (self.lenignoretag(line) > self._maxlinelen + 1):
-                print "Warning: line", self._lno + self._baselno - 1, "is too long,", self.lenignoretag(line), "characters"
+                print "Warning: line", self._lineno + self._baselineno, "is too long,", self.lenignoretag(line), "characters"
                 print self._block[-1]
             
             if (len(self._text) > self._maxlines):
-                print "Warning: line", self._lno + self._baselno - 1, "Too many lines in the message box"
+                print "Warning: line", self._lineno + self._baselineno, "Too many lines in the message box"
     
     # ============================================================================
     
@@ -92,7 +94,7 @@ class ScriptBlock(object):
     def write(self, file_, encoding):
         # Wrap text if word wrapping is enabled
         if (self._wrapper != None and len(self._text) != 0):
-            newtext = self._wrapper.wrap(self._block[-len(self._text):])
+            newtext = self._wrapper.wrap(self._block[-len(self._text):], self._baselineno + self._text[0])
             self._wrapper.clear()
             #print "newtext:", newtext
             #print "block:", self._block
@@ -106,7 +108,7 @@ class ScriptBlock(object):
         if(self._textformatter != None and len(self._text) != 0):
             newtext = map(self._textformatter.formatline, self._block[-len(self._text):])
             #if (newtext != self._block[-len(self._text):]):
-            #    print self._baselno + self._lno - 1
+            #    print self._baselineno + self._lineno
             self._textformatter.clear()
             self._block = self._block[:-len(self._text)] + newtext
             #print "Newtext",newtext
@@ -124,6 +126,8 @@ class ScriptBlock(object):
         
         f.close()
     
+    # ============================================================================
+        
     def __writeline__(self, line):
         str_ = u''
         for word in line:

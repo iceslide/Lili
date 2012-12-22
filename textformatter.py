@@ -21,6 +21,10 @@ class TextFormatter(object):
         """ Enforces the original script formatting style """
         self._lineno += 1
         
+        # Remove trailing white spaces
+        while(line[-1] == u' '):
+            line = line[:-1]
+        
         if (self._lineno == 1 and line[0] == self._openquote):
             self._isquote = True
         

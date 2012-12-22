@@ -22,7 +22,7 @@ class ScriptReader(object):
         if (parser.getencoding()):
             self._encoding = parser.getencoding()
         if (parser.getoutputfile()):
-            self._outputfile = parser.getoutputfile()
+            self._outputfile = parser.getoutputfile()[0]
                 
         return None
   
@@ -30,7 +30,9 @@ class ScriptReader(object):
         self._block = scriptblock.ScriptBlock()
         self._block.setbaselinenumber(self._lineno)
         
+        # Empty the output file
         fout = open(self._outputfile, 'w')
+        fout.close()
         
         # Check if scriptreader-fileinput works correctly in py3
         with open(self._inputfile, 'r') as f:
@@ -59,6 +61,5 @@ class ScriptReader(object):
                     self._block.addtextline(line)
         
         self._block.write(self._outputfile, self._encoding)
-        fout.close()
         
         print self._lineno, "lines processed"

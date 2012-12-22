@@ -7,6 +7,8 @@ class Wrapper(object):
     _maxlinelen = 68
     _maxlines   = 3 # max lines in a text block
     _newline    = u'\r\n'
+    _doublewidthchars = [u'「', u'」', u'『', u'』', u'\u3000']
+    _baselineno = None
     
     def __init__(self):
         pass
@@ -17,8 +19,9 @@ class Wrapper(object):
         """
         self._tokens  = [] # Lines Tokens
     
-    def wrap(self, textlines):
+    def wrap(self, textlines, baselineno):
         self._textlines = textlines
+        self._baselineno = baselineno
         dowrap = False
         
         # Only wrap if one or more lines exceed the max length
@@ -63,7 +66,7 @@ class Wrapper(object):
         
         #print "N:", len(newtokens)
         #print "Newtokens:", newtokens
-        return self.tokenstotext(newtokens)
+        return self.tokenstostringlist(newtokens)
     
     # ============================================================================
     
@@ -78,7 +81,7 @@ class Wrapper(object):
     
     # ============================================================================
     
-    def tokenstotext(self, tokens):
+    def tokenstostringlist(self, tokens):
         lines = []
         #print "Token:", tokens
         for tokenlist in tokens:
