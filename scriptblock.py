@@ -48,26 +48,32 @@ class ScriptBlock(object):
     def addcommentline(self, line):
         self._comment.append(self._lineno)
         self._block.append(line)
+        # A comment block begins with a comment. Typically first block in file
         if (self._baselineno == None): self._baselineno = 0
         else:                          self._lineno    += 1
     
     def addtagline(self, line):
         self._tag.append(self._lineno)
         self._block.append(line)
-        if (self._baselineno == None): self._baselineno = 0
-        else:                          self._lineno    += 1
+        self._lineno += 1
     
     def addpointerline(self, line):
         self._pointer = self._lineno
         self._block.append(line)
+        # A block begins with a pointer
         if (self._baselineno == None): self._baselineno = 0
         else:                          self._lineno    += 1
     
     def addtextline(self, line):
+        
+        if (line[:4] == u"===="):
+            self._block.append(line)
+            self._lineno += 1
+            return                  # Don't process line as text
+        
         self._text.append(self._lineno)
         self._block.append(line)
-        if (self._baselineno == None): self._baselineno = 0
-        else:                          self._lineno    += 1
+        self._lineno += 1
         
         if (self._warning):
             if (self.lenignoretag(line) > self._maxlinelen):
