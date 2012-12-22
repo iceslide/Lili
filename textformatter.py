@@ -8,6 +8,8 @@ class TextFormatter(object):
     _doublewidthspace = u'\u3000'
     _isquote          = False
     _lineno           = 0
+    _openingchars     = [u'「', u'（', u'『']
+    _closingchars     = [u'「', u'）', u'』']
     
     def __init__(self):
         pass
@@ -25,9 +27,15 @@ class TextFormatter(object):
         while(line[-1] == u' '):
             line = line[:-1]
         
-        if (self._lineno == 1 and line[0] == self._openquote):
+        if (self._lineno == 1 and line[0] in self._openingchars):
             self._isquote = True
+            
+        # Removed translator introduced spaces
+        if (self._lineno == 1 and self._isquote):
+            while (line[0] == u' '):
+                line = self._doublewidthspace + line[1:]
         
+        # A quote cannot end in dot '.', except in the case of ellipsis "..."
         if (self._isquote):
             i = line.find(self._closequote)
             while(i != -1):
