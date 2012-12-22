@@ -70,9 +70,9 @@ class ScriptBlock(object):
         else:                          self._lineno    += 1
         
         if (self._warning):
-            if (self.lenignoretag(line) > self._maxlinelen + 1):
-                print "Warning: line", self._lineno + self._baselineno, "is too long,", self.lenignoretag(line), "characters"
-                print self._block[-1]
+            if (self.lenignoretag(line) > self._maxlinelen):
+                print "[Warning][line", self._lineno + self._baselineno, "] Line is too long,", self.lenignoretag(line), "characters: ",
+                print self._block[-1][:50], "..."
             
             if (len(self._text) > self._maxlines):
                 print "Warning: line", self._lineno + self._baselineno, "Too many lines in the message box"
@@ -83,10 +83,16 @@ class ScriptBlock(object):
         n = 0
         level = 0
         for c in line.rstrip():
-            if (c == u'['): level += 1
-            elif (c == u']'): level -= 1
+            if (c == u'['):
+                level += 1
+                continue
+            elif (c == u']'):
+                level -= 1
+                continue
             
-            if (level == 0): n += 1
+            if (level == 0):
+                n += 1
+        
         return n
     
     # ============================================================================

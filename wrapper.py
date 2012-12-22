@@ -73,10 +73,17 @@ class Wrapper(object):
     def lenignoretag(self, line):
         n = 0
         level = 0
-        for c in line:
-            if (c == u'['): level += 1
-            elif (c == u']'): level -= 1
-            elif (level == 0): n += 1
+        for c in line.rstrip():
+            if (c == u'['):
+                level += 1
+                continue
+            elif (c == u']'):
+                level -= 1
+                continue
+            
+            if (level == 0):
+                n += 1
+                
         return n
     
     # ============================================================================
