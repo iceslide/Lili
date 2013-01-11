@@ -1,60 +1,82 @@
 # -*- coding: utf-8 -*-
+import constants
+
+__author__ = constants.__author__
+__copyright__ = constants.__copyright__
+__license__  = constants.__license__
 
 class TextFormatter(object):
-    """ Text formatter class to preserve the original script formatting style """
+    """ Formats the script file with Lilith's formatting rules.
     
-    _openquote        = u'「'
-    _closequote       = u'」'
-    _doublewidthspace = u'\u3000'
+    Public methods:
+    clear -- Reset the object to its default state
+    formatline -- format a line
+    
+    """
+
+    _widewhitespace   = None
     _isquote          = False
     _lineno           = 0
-    _openingchars     = [u'「', u'（', u'『']
-    _closingchars     = [u'「', u'）', u'』']
+    _wideopeningchars = None
+    _wideclosingchars = None
     
     def __init__(self):
-        pass
+        """ Constructor: Initialize required instance variables. """
+        self._widewhitespace = constants.WIDEWHITESPACE
+        self._wideopeningchars = constants.WIDEOPENINGCHARS
+        self._wideclosingchars = constants.WIDECLOSINGCHARS
     
     def clear(self):
-        """ Resets the object to its default state """
+        """ Reset the object to its default state. """
         self._isquote = False
         self._lineno = 0
     
     def formatline(self, line):
-        """ Enforces the original script formatting style """
+        """ Apply formatting to the line. """
         self._lineno += 1
+        line = line.rstrip(constants.NEWLINE)
         
-        # Remove trailing white spaces
-        while(line[-1] == u' '):
-            line = line[:-1]
+        # Remove leading and trailing white spaces
+        if(len(line.strip()) == 0):
+            return line
         
-        if (self._lineno == 1 and line[0] in self._openingchars):
+        line = line.strip()
+                
+                
+        if (self._lineno == 1 and line[0] in self._wideopeningchars):
             self._isquote = True
-            
-        # Removed translator introduced spaces
+        
+        #
+        # Indentation rules
+        #
+        
         if (self._lineno == 1 and self._isquote):
-            while (line[0] == u' '):
-                line = self._doublewidthspace + line[1:]
+            if (line.startswith(self._widewhitespace)):
+                line = line[1:]
+        
+        if (self._lineno == 1 and not self._isquote):
+            if (not line.startswith(self._widewhitespace)):
+                line = self._widewhitespace + line
+        
+        # Insert double width whitespace to align lines/paragraph
+        if (self._lineno > 1 and self._isquote):            
+            if (not line.startswith(self._widewhitespace)):
+                line = self._widewhitespace + line
+            
+        # If no quotation, the lines/paragraph is not aligned
+        if (self._lineno > 1 and not self._isquote):
+            if (line.startswith(self._widewhitespace)):
+                line = line[1:]
         
         # A quote cannot end in dot '.', except in the case of ellipsis "..."
         if (self._isquote):
-            i = line.find(self._closequote)
-            while(i != -1):
-                if(line[i - 1] == '.' and line[i - 2] != '.'):
-                    line = line[:i - 1] + line[i:]
+            for c in self._wideclosingchars:
+                i = line.find(c)
+                while(i != -1):
+                    if(line[i - 1] == u'.' and not line.endswith(u'...')):
+                        line = line[:i - 1] + line[i:]
                     
-                i = line.find(self._closequote, i+1)
-                
+                    i = line.find(c, i+1)
         
-        # Insert double space to align lines/paragraph
-        if (self._lineno > 1 and self._isquote):
-            if (line[0] == u' '):
-                line = self._doublewidthspace + line[1:]
-            elif (line[0] != self._doublewidthspace):
-                line = self._doublewidthspace + line
         
-        # If no quotation, the lines/paragraph is not aligned
-        if (self._lineno > 1 and not self._isquote):
-            if (line[0] == u' ' or line[0] == self._doublewidthspace ):
-                line = line[1:]
-        
-        return line
+        return line + constants.NEWLINE

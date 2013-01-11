@@ -1,56 +1,73 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
+
+import constants
+
+__author__ = constants.__author__
+__copyright__ = constants.__copyright__
+__license__  = constants.__license__
 
 class Wrapper(object):
-    """"""
+    """ Wraps the text to avoid overflowing the message box.
+    
+    Public methods:
+    wrap -- Perform the wrapping
+    
+    """
+    
+    _newline    = None
+    _maxlinelen = None
+    _maxlines   = None
+    
     _textlines  = []
-    _tokens     = [] # Line Tokens
-    _maxlinelen = 58 # Value for Taimanin Asagi 2 Premium Box. Change accordingly for your game
-    _maxlines   = 3 # max lines in a text block
-    _newline    = u'\r\n'
-    _doublewidthchars = [u'「', u'」', u'『', u'』', u'\u3000']
     _baselineno = None
     
     def __init__(self):
-        pass
+        """ Constructor: Initialize required instance variables. """
+        self._newline = constants.NEWLINE
+        self._maxlines = constants.MAXLINES
+        self._maxlinelen = constants.MAXLINELENGTH
     
-    def clear(self):
-        """
-        Resets the object to its initial state
-        """
-        self._tokens  = [] # Lines Tokens
     
     def wrap(self, textlines, baselineno):
+        """ Wraps a block of text
+        
+        Arguments:
+        textlines -- the list of strings to wrap
+        baselineno -- the line number of the first line
+        
+        """
         self._textlines = textlines
         self._baselineno = baselineno
         dowrap = False
         
         # Only wrap if one or more lines exceed the max length
         for line in self._textlines:
-            #print self.lenignoretag(line)
-            if (self.lenignoretag(line) > self._maxlinelen):
+            #print(self._lenignoretag(line))
+            if (self._lenignoretag(line) > self._maxlinelen):
                 dowrap = True;
                 break
         
         if (not dowrap):
             return self._textlines
-            #print "map", map(self.tokenize, self._textlines)f._textlines
+            #print("map", map(self._tokenize, self._textlines)f._textlines)
         
         # Wrap segment
-        self._tokens = map(self.tokenize, self._textlines)
+        tokens = map(self._tokenize, self._textlines)
         
         # Flatten tokens list
         flattokens = []
-        for i in range(len(self._tokens)):
-            flattokens += self._tokens[i]
-        #print "Flattokens", flattokens
+        for i in range(len(tokens)):
+            flattokens += tokens[i]
+        #print("Flattokens", flattokens)
         
         # Wrap loop
         tmp = []
         newtokens = []
         n = 0
         for t in flattokens:
-            if (n + self.lenignoretag(t) <= self._maxlinelen):
-                n += self.lenignoretag(t)
+            if (n + self._lenignoretag(t) <= self._maxlinelen):
+                n += self._lenignoretag(t)
                 tmp.append(t)
             else:
                 # Line is full
@@ -58,19 +75,20 @@ class Wrapper(object):
                 n = 0
                 if (t != u' '):
                     tmp = [t]
-                    n += self.lenignoretag(t)
+                    n += self._lenignoretag(t)
                 else:
                     tmp = []
                 
         newtokens.append(tmp)
         
-        #print "N:", len(newtokens)
-        #print "Newtokens:", newtokens
-        return self.tokenstostringlist(newtokens)
+        #print("N:", len(newtokens))
+        #print("Newtokens:", newtokens)
+        return self._tokenstostringlist(newtokens)
     
-    # ============================================================================
+    # =================================================================
     
-    def lenignoretag(self, line):
+    def _lenignoretag(self, line):
+        """ Gets the length of a line ignoring any inline tag. """
         n = 0
         level = 0
         for c in line.rstrip():
@@ -86,69 +104,78 @@ class Wrapper(object):
                 
         return n
     
-    # ============================================================================
+    # =================================================================
     
-    def tokenstostringlist(self, tokens):
+    def _tokenstostringlist(self, tokens):
+        """ Returns a list containing a string.
+        
+        Receives a list of lists of tokens and returns a list
+        with the final string with newlines characters inserted.
+        
+        """
         lines = []
-        #print "Token:", tokens
+        #print("Token:", tokens)
         for tokenlist in tokens:
             line = u''
             for word in tokenlist:
                 line += word
             line += self._newline
             lines.append(line)
-        #print "lines:", lines
+        #print("lines:", lines)
         return lines
     
-    # ============================================================================
+    # =================================================================
     
-    def tokenize(self, line):
-        """
-        Breaks the line into tokens: wide spaces, spaces, words, tags. Removes trailing control characters
-        Returns a list of tokens representing their string values.
+    def _tokenize(self, line):
+        """ Returns a list of tokens.
+        
+        Breaks the line into tokens: wide spaces, spaces, words and tags.
+        Removes trailing whitespace characters, and
+        returns a list of tokens represented by their string values.
+        
         """
         T = []
-        lvl = 0
-        tok_ini = 0
+        level = 0
+        token_ini = 0
         s = u''
         
         for i in range(len(line)):
-            if(line[i] == u'\u3000' and lvl == 0):
+            if(line[i] == u'\u3000' and level == 0):
                 # Detect word
-                s = line[tok_ini:i]
+                s = line[token_ini:i]
                 if(len(s) > 0):
                     T.append(s)
                 T.append(u'\u3000')
-                tok_ini = i+1
-            elif(line[i] == u' ' and lvl == 0):
+                token_ini = i + 1
+            elif(line[i] == u' ' and level == 0):
                 # Detect word
-                s = line[tok_ini:i]
+                s = line[token_ini:i]
                 if(len(s) > 0):
                     T.append(s) #single word
                 T.append(u' ')
-                tok_ini = i+1
-            elif(line[i] == u',' and lvl == 0):
+                token_ini = i + 1
+            elif(line[i] == u',' and level == 0):
                 # Detect word
-                s = line[tok_ini:i+1]
+                s = line[token_ini:i+1]
                 T.append(s) #single word
-                tok_ini = i+1
+                token_ini = i + 1
             elif(line[i] == u'['):
                 # Detect start tag
-                lvl += 1
-                T.append(line[tok_ini:i])
-                tok_ini = i
+                level += 1
+                T.append(line[token_ini:i])
+                token_ini = i
             elif(line[i] == u']'):
                 # Detect end tag
-                lvl -= 1
-                T.append(line[tok_ini:i+1])
-                tok_ini = i+1
+                level -= 1
+                T.append(line[token_ini:i+1])
+                token_ini = i + 1
             else:
                 pass
                                     
-        s = line[tok_ini:len(line)].rstrip()
+        s = line[token_ini:len(line)].rstrip()
         if(len(s) > 0):
             T.append(s)
                                         
-        #print "Tokens:", len(T)
-        #print T
+        #print("Tokens:", len(T))
+        #print(T)
         return T
