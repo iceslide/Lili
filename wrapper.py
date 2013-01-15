@@ -91,7 +91,7 @@ class Wrapper(object):
         """ Gets the length of a line ignoring any inline tag. """
         n = 0
         level = 0
-        for c in line.rstrip():
+        for c in line:
             if (c == '['):
                 level += 1
                 continue
