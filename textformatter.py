@@ -13,18 +13,18 @@ class TextFormatter(object):
     formatline -- format a line
     
     """
-
-    _widewhitespace   = None
+    
     _isquote          = False
     _lineno           = 0
+    _widewhitespace   = None
     _wideopeningchars = None
     _wideclosingchars = None
     
     def __init__(self):
         """ Constructor: Initialize required instance variables. """
-        self._widewhitespace = constants.WIDEWHITESPACE
-        self._wideopeningchars = constants.WIDEOPENINGCHARS
-        self._wideclosingchars = constants.WIDECLOSINGCHARS
+        self._widewhitespace = constants.WIDE_WHITESPACE
+        self._wideopeningchars = constants.WIDE_OPENING_CHARS
+        self._wideclosingchars = constants.WIDE_CLOSING_CHARS
     
     def clear(self):
         """ Reset the object to its default state. """
@@ -73,7 +73,7 @@ class TextFormatter(object):
             for c in self._wideclosingchars:
                 i = line.find(c)
                 while(i != -1):
-                    if(line[i - 1] == u'.' and not line.endswith(u'...')):
+                    if(line[i - 1] == '.' and not line.endswith('...')):
                         line = line[:i - 1] + line[i:]
                     
                     i = line.find(c, i+1)

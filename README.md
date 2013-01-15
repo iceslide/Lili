@@ -6,7 +6,7 @@ of helper utilities to aid in the translation of games based in this engine.
 
 Lili provides the following functionality:
 
- - Line is too long warning.
+ - Line is too long warnings.
  - Basic word wrapping.
  - Automatic text formatting.
  - Extracts dialog text.
@@ -24,4 +24,4 @@ the Free Software Foundation; either version 3 of the License, or
 Requirements
 ------------
 
-This tool is written and tested with Python 2.7
+This tool requires Python 3. It is developed and tested in Python 3.2

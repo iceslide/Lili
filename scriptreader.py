@@ -1,7 +1,4 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#import fileinput
-from __future__ import print_function
 
 import scriptblock
 import liliargparser
@@ -19,9 +16,9 @@ class ScriptReader(object):
     
     """
     
-    _inputfile      = u""
-    _outputfile     = u"out.txt"
-    _encoding       = u"sjis"
+    _inputfile      = ""
+    _outputfile     = constants.DEFAULT_OUTPUT_FILE
+    _encoding       = constants.DEFAULT_ENCODING
     _lineno         = 0      # Line number
     _block          = None   # ScriptBlock
   
@@ -34,13 +31,14 @@ class ScriptReader(object):
         if (parser.getencoding()):
             self._encoding = parser.getencoding()
         else:
-            self._encoding = constants.DEFAULTENCODING
+            self._encoding = constants.DEFAULT_ENCODING
         
         if (parser.getoutputfile()):
             self._outputfile = parser.getoutputfile()
         else:
-            self._outputfile = constants.DEFAULTOUTPUTFILE
-            #self._outputfile = self._inputfile + "~lili"
+            #self._outputfile = constants.DEFAULT_OUTPUT_FILE
+            self._outputfile = self._inputfile + "~" + \
+                               constants.__appname__.lower()
                 
         return None
   
@@ -52,22 +50,22 @@ class ScriptReader(object):
         self._block.setbaselinenumber(self._lineno)
         
         # Empty the output file
-        fout = open(self._outputfile, 'w')
+        fout = open(self._outputfile, 'wb')
         fout.close()
         
         # Check if scriptreader-fileinput works correctly in py3
-        with open(self._inputfile, 'r') as f:
+        with open(self._inputfile, 'rb') as f:
             for line in f:
                 line = line.decode(self._encoding)
                 self._lineno += 1
                 
-                if (line.startswith(u';')):
+                if (line.startswith(';')):
                     self._block.addcommentline(line)
-                elif (line.startswith(u'[')):
+                elif (line.startswith('[')):
                     self._block.addtagline(line)
-                elif (line.startswith(u'@')):
+                elif (line.startswith('@')):
                     self._block.addcommandline(line)
-                elif (line.startswith(u'*')):
+                elif (line.startswith('*')):
                     # Process old block before clearing it
                     self._block.write(self._outputfile, self._encoding)
                     self._block.clear().setbaselinenumber(self._lineno)
@@ -80,4 +78,4 @@ class ScriptReader(object):
         self._block.write(self._outputfile, self._encoding)
         
         #print(self._inputfile,
-        #      str(self._lineno) + u" lines processed", sep=u':')
+        #      str(self._lineno) + " lines processed", sep=':')

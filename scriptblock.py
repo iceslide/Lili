@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-
 import liliargparser
 import wrapper
 import textformatter
@@ -40,7 +38,7 @@ class ScriptBlock(object):
     _textformatter = None
     
     # Imported constanst
-    _inputfile     = u""
+    _inputfile     = ""
     _maxlinelen    = None
     _maxlines      = None
     
@@ -57,8 +55,8 @@ class ScriptBlock(object):
     def __init__(self, filename):
         """ Constructor: Initialize required instance variables. """
         self._inputfile = filename
-        self._maxlines = constants.MAXLINES
-        self._maxlinelen = constants.MAXLINELENGTH
+        self._maxlines = constants.MAX_LINES
+        self._maxlinelen = constants.MAX_LINE_LENGTH
                 
         parser = liliargparser.LiliArgParser().parse()
         if (parser.iswarning()):
@@ -149,13 +147,13 @@ class ScriptBlock(object):
         if (self._warning):
             if (self._lenignoretag(line) > self._maxlinelen):
                 print(self._inputfile, self._baselineno + self._lineno,
-                      u" warning", u" Line too long:", sep=u':', end=u'')
-                print(u' ', self._block[-1][:25], u"...")
+                      " warning", " Line too long:", sep=':', end='')
+                print(' ', self._block[-1][:25], "...")
             
             if (len(self._text) > self._maxlines):
                 print(self._inputfile, self._baselineno + self._lineno,
-                      u" warning", u" Too many lines in message box",
-                      sep=u':')
+                      " warning", " Too many lines in message box",
+                      sep=':')
     
     # =================================================================
     
@@ -164,10 +162,10 @@ class ScriptBlock(object):
         n = 0
         level = 0
         for c in line.rstrip():
-            if (c == u'['):
+            if (c == '['):
                 level += 1
                 continue
-            elif (c == u']'):
+            elif (c == ']'):
                 level -= 1
                 continue
             
@@ -194,31 +192,33 @@ class ScriptBlock(object):
             #print(self._block[:-len(self._text)] + newtext)
             self._block = self._block[:-len(self._text)] + newtext
             if(len(self._text) != 0):
-                self._text = range(self._text[0],
-                                   self._text[0] + len(newtext))
+                self._text = list(range(self._text[0],
+                                   self._text[0] + len(newtext)))
             #print("1", self._block)
         
         # Format text if text formatting is enabled
         if(self._textformatter is not None and len(self._text) != 0):
-            newtext = map(self._textformatter.formatline,
-                          self._block[-len(self._text):])
+            newtext = list(map(self._textformatter.formatline,
+                          self._block[-len(self._text):]))
             #if (newtext != self._block[-len(self._text):]):
             #    print(self._baselineno + self._lineno)
             self._textformatter.clear()
             self._block = self._block[:-len(self._text)] + newtext
             #print("Newtext", newtext)
         
-        f = open(file_, 'a')
+        f = open(file_, 'ab')
         
         lines = []
         if(self._textonly):
             if(len(self._text) != 0):
-                lines = map(self._writeline, self._block[-len(self._text):])
+                lines = list(map(self._writeline,
+                                 self._block[-len(self._text):]))
         else:
-            lines = map(self._writeline, self._block)
+            lines = list(map(self._writeline, self._block))
         
         for line in lines:
             f.write(line.encode(encoding))
+            #print(line, end="")
         
         f.close()
     
@@ -226,7 +226,7 @@ class ScriptBlock(object):
         
     def _writeline(self, line):
         """ Concatenates the strings stored in a list. """
-        str_ = u''
+        str_ = ''
         for word in line:
             str_ += word
         return str_

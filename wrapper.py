@@ -25,8 +25,8 @@ class Wrapper(object):
     def __init__(self):
         """ Constructor: Initialize required instance variables. """
         self._newline = constants.NEWLINE
-        self._maxlines = constants.MAXLINES
-        self._maxlinelen = constants.MAXLINELENGTH
+        self._maxlines = constants.MAX_LINES
+        self._maxlinelen = constants.MAX_LINE_LENGTH
     
     
     def wrap(self, textlines, baselineno):
@@ -53,7 +53,7 @@ class Wrapper(object):
             #print("map", map(self._tokenize, self._textlines)f._textlines)
         
         # Wrap segment
-        tokens = map(self._tokenize, self._textlines)
+        tokens = list(map(self._tokenize, self._textlines))
         
         # Flatten tokens list
         flattokens = []
@@ -73,7 +73,7 @@ class Wrapper(object):
                 # Line is full
                 newtokens.append(tmp)
                 n = 0
-                if (t != u' '):
+                if (t != ' '):
                     tmp = [t]
                     n += self._lenignoretag(t)
                 else:
@@ -92,10 +92,10 @@ class Wrapper(object):
         n = 0
         level = 0
         for c in line.rstrip():
-            if (c == u'['):
+            if (c == '['):
                 level += 1
                 continue
-            elif (c == u']'):
+            elif (c == ']'):
                 level -= 1
                 continue
             
@@ -116,7 +116,7 @@ class Wrapper(object):
         lines = []
         #print("Token:", tokens)
         for tokenlist in tokens:
-            line = u''
+            line = ""
             for word in tokenlist:
                 line += word
             line += self._newline
@@ -137,34 +137,34 @@ class Wrapper(object):
         T = []
         level = 0
         token_ini = 0
-        s = u''
+        s = ""
         
         for i in range(len(line)):
-            if(line[i] == u'\u3000' and level == 0):
+            if(line[i] == '\u3000' and level == 0):
                 # Detect word
                 s = line[token_ini:i]
                 if(len(s) > 0):
                     T.append(s)
-                T.append(u'\u3000')
+                T.append('\u3000')
                 token_ini = i + 1
-            elif(line[i] == u' ' and level == 0):
+            elif(line[i] == ' ' and level == 0):
                 # Detect word
                 s = line[token_ini:i]
                 if(len(s) > 0):
                     T.append(s) #single word
-                T.append(u' ')
+                T.append(' ')
                 token_ini = i + 1
-            elif(line[i] == u',' and level == 0):
+            elif(line[i] == ',' and level == 0):
                 # Detect word
                 s = line[token_ini:i+1]
                 T.append(s) #single word
                 token_ini = i + 1
-            elif(line[i] == u'['):
+            elif(line[i] == '['):
                 # Detect start tag
                 level += 1
                 T.append(line[token_ini:i])
                 token_ini = i
-            elif(line[i] == u']'):
+            elif(line[i] == ']'):
                 # Detect end tag
                 level -= 1
                 T.append(line[token_ini:i+1])

@@ -20,17 +20,23 @@ class LiliArgParser(object):
         """ Parse the input arguments """
         parser = argparse.ArgumentParser(prog=constants.__appname__)
         parser.add_argument('-e', 
-            help='specify the input file encoding. Default: Shift-jis')
+            help='specify the input file encoding. Default: shift-jis. \
+                  For more encodings visit \
+                  http://docs.python.org/3/library/codecs.html')
         parser.add_argument('-i', type=str, action="store", help='input file')
         parser.add_argument('-f', action='store_true',
             help='format the file following Lilith\'s style guidelines')
-        parser.add_argument('-o', type=str, help='output file')
+        parser.add_argument('-o', type=str,
+                            help='output file. If not specified the changes \
+                            will be written to a new file named as the input \
+                            file and ending in ~lili')
         parser.add_argument('-t', action='store_true',
             help='output only the game text')
         parser.add_argument('-w', action='store_true',
-            help='prints a warning when a text line is too long')
+            help='enables warnings related to the text presentation \
+                  inside the message box')
         parser.add_argument('-W', action='store_true',
-            help='(EXPERIMENTAL) Basic word wrapping')
+            help='basic word wrapping')
         parser.add_argument('--version', action='version',
         version='%(prog)s ' + constants.__version__)
         
