@@ -6,7 +6,7 @@ of helper utilities to aid in the translation of games based in this engine.
 
 Lili provides the following functionality:
 
- - Line is too long warnings.
+ - Warnings related to the message box text presentation .
  - Basic word wrapping.
  - Automatic text formatting.
  - Extracts dialog text.

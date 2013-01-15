@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 __license__   = "GPL v3"
-__copyright__ = "2012, iceslide <iceslide@gmail.com>"
+__copyright__ = "2012, 2013, iceslide <iceslide@gmail.com>"
 __appname__   = "Lili"
 _numeric_version = (0, 3)
 __version__   = '.'.join(map(str, _numeric_version))
