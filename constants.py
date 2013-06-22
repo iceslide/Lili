@@ -8,7 +8,7 @@
 __license__   = "GPL v3"
 __copyright__ = "2012, 2013, iceslide <iceslide@gmail.com>"
 __appname__   = "Lili"
-_numeric_version = (0, 3)
+_numeric_version = (0, 4)
 __version__   = '.'.join(map(str, _numeric_version))
 __author__    = "iceslide <iceslide@gmail.com>"
 
@@ -16,9 +16,9 @@ __author__    = "iceslide <iceslide@gmail.com>"
 DEFAULT_ENCODING = "shift_jis"
 DEFAULT_OUTPUT_FILE = "out.txt"
 
-MAX_LINES = 3        # Maximum lines in a message box
+MAX_LINES = 3         # Maximum lines in a message box
 MAX_LINE_LENGTH = 58  # Value for Taimanin 2 Asagi Premium Box.
-                    # Change accordingly for your game.
+                      # Change accordingly for your game.
 
 NEWLINE = "\r\n"
 WIDE_WHITESPACE = '\u3000'
