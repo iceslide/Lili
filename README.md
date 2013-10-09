@@ -15,7 +15,7 @@ Lili provides the following functionality:
 
 License and disclaimer
 ----------------------
-Copyright (C) 2012, 2013 iceslide <iceslide@gmail.org>
+Copyright (C) 2012, 2013 iceslide <iceslide@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
